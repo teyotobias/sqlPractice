@@ -98,7 +98,7 @@ WHERE amount > 150.00;
 -- Find customers with email addresses from a specific domain
 SELECT *
 FROM customers
-WHERE name LIKE '%@gmai.com';
+WHERE name LIKE '%@gmail.com';
 
 -- Get all orders placed in the last 30 days
 SELECT *
