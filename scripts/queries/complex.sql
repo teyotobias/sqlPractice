@@ -30,3 +30,21 @@ FROM orders
 GROUP BY month
 ORDER BY month
 
+-- Determine how frequently customers place orders by calculating the average number of days between orders
+SELECT customers.name, AVG(orders.order_date - LAG(orders.order_date) OVER (PARTITION BY customers.id ORDER BY orders.order_date)) AS avg_days_between_orders
+FROM customers
+JOIN orders ON customers.id = orders.customer_id
+GROUP BY customers.name;
+
+-- Calculate the month-over-month revenue growth rate
+WITH monthly_revenue AS (
+    SELECT DATE_TRUNC('month', order_date) AS month, SUM(amount) AS total_revenue
+    FROM orders
+    GROUP BY month
+)
+SELECT month, 
+       total_revenue, 
+       LAG(total_revenue) OVER (ORDER BY month) AS previous_month_revenue,
+       (total_revenue - LAG(total_revenue) OVER (ORDER BY month)) / LAG(total_revenue) OVER (ORDER BY month) * 100 AS growth_rate
+FROM monthly_revenue
+ORDER BY month;
