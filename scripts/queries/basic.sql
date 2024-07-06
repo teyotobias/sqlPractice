@@ -31,6 +31,36 @@ ON orders.customer_id = customers.id;
 -- Practical Use: This command helps in tracking a customer's purchasing behavior, handling order-related queries, or 
 -- managing customer relationships.
 
+-- LEFT JOIN
+-- Retrieve all customer names, including those who haven't placed any orders,
+-- along with their order amounts if they have placed orders.
+SELECT customers.name, orders.amount, orders.order_date
+FROM customers
+LEFT JOIN orders on customer.id = orders.customer_id
+
+-- RIGHT JOIN
+-- Retrieve all orders and the corresponding customer names, including
+-- orders that may not have a corresponding customer record
+SELECT orders.amount, order.order_date, customers.name
+FROM customers
+RIGHT JOIN orders ON customers.id = orders.customer_id;
+
+-- FULL OUTER JOIN
+-- Retrieve all customeres and all orders, including those that do not have
+-- a corresponding match in the other table
+SELECT customers.name, orders.amount, orders.order_date
+FROM customers
+FULL OUTER JOIN orders ON customers.id = orders.customer_id;
+
+-- SELF JOIN
+-- Find pairs of customers with similar names (assuming there is a minor variation in the spelling of names)
+SELECT a.name AS customer1, b.name AS customer2
+FROM customers a
+JOIN customers b ON a.name LIKE b.name || '%'
+WHERE a.id <> b.id;
+
+-- still need LEFT JOIN with Aggregation, INNER JOIN with condition, and full outer join with condition
+
 
 -- Combine customer information with their corresponding orders to get a complete view of each order.
 SELECT customers.name, orders.amount, orders.order_date
@@ -84,6 +114,9 @@ FROM customers
 JOIN orders ON customers.id = orders.customer_id
 GROUP BY customers.name;
 
+
+
+
 -- Find maximum order amount placed by each customer
 SELECT customers.name, MAX(orders.amount) AS max_amount
 FROM customers
@@ -110,3 +143,4 @@ SELECT DATE_TRUNC('month', order_date) AS month, SUM(amount) AS total_amount
 FROM orders
 GROUP BY month
 ORDER BY month;
+
